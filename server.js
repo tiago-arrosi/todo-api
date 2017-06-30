@@ -31,13 +31,17 @@ app.get('/todos', function(req, res) {
   var filteredTodos = todos
 
   if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
-    filteredTodos = _.where(filteredTodos, {completed: true});
+    filteredTodos = _.where(filteredTodos, {
+      completed: true
+    });
   } else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
-    filteredTodos = _.where(filteredTodos, {completed: false});
+    filteredTodos = _.where(filteredTodos, {
+      completed: false
+    });
   }
 
   if (queryParams.hasOwnProperty('q') && _.isString(queryParams.q) && queryParams.q.trim().length > 0) {
-    filteredTodos = _.filter(filteredTodos, function (obj) {
+    filteredTodos = _.filter(filteredTodos, function(obj) {
       return (obj.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1);
     });
   }
@@ -48,7 +52,9 @@ app.get('/todos', function(req, res) {
 //GET /todos/:id
 app.get('/todos/:id', function(req, res) {
   var todoId = parseInt(req.params.id, 10);
-  var matchedTodo = _.findWhere(todos, {id:todoId});
+  var matchedTodo = _.findWhere(todos, {
+    id: todoId
+  });
 
   if (matchedTodo) {
     res.json(matchedTodo);
@@ -76,13 +82,17 @@ app.post('/todos', function(req, res) {
 // DELETE /todos/:id
 app.delete('/todos/:id', function(req, res) {
   var todoId = parseInt(req.params.id, 10);
-  var matchedTodo = _.findWhere(todos, {id:todoId});
+  var matchedTodo = _.findWhere(todos, {
+    id: todoId
+  });
 
   if (matchedTodo) {
     todos = _.without(todos, matchedTodo);
     res.json(matchedTodo);
   } else {
-    res.status(404).json({"error":"no todo found with that id"});
+    res.status(404).json({
+      "error": "no todo found with that id"
+    });
   }
 });
 
@@ -90,23 +100,31 @@ app.delete('/todos/:id', function(req, res) {
 app.put('/todos/:id', function(req, res) {
   var todoId = parseInt(req.params.id, 10);
   var body = _.pick(req.body, 'description', 'completed');
-  var matchedTodo = _.findWhere(todos, {id:todoId});
+  var matchedTodo = _.findWhere(todos, {
+    id: todoId
+  });
   var validAttributes = {};
 
   if (!matchedTodo) {
-    return res.status(404).json({"error":"no todo found with that id"});
+    return res.status(404).json({
+      "error": "no todo found with that id"
+    });
   }
 
   if (body.hasOwnProperty('completed') && _.isBoolean(body.completed)) {
     validAttributes.completed = body.completed;
   } else if (body.hasOwnProperty('completed')) {
-    res.status(400).json({"error": "completed must be a boolean value"})
+    res.status(400).json({
+      "error": "completed must be a boolean value"
+    })
   }
 
   if (body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0) {
     validAttributes.description = body.description;
   } else if (body.hasOwnProperty('description')) {
-    res.status(400).json({"error": "description must be a string value"})
+    res.status(400).json({
+      "error": "description must be a string value"
+    })
   }
 
   _.extend(matchedTodo, validAttributes);
